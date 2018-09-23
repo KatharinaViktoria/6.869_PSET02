@@ -28,13 +28,17 @@ img = imread('DSC_0221.JPG');
 % 5 pairs of points 
 % redpoints are the locations of red spots
 % bluepoints are the locations of blue spots.
-imshow(img)
-redpoints = ginput(20)
-imshow(img)
-bluepoints = ginput(20)
+%imshow(img)
+%redpoints = ginput(20)
+%imshow(img)
+%bluepoints = ginput(20)
 
 save('redpoints.mat','redpoints')
 save('bluepoints.mat','bluepoints')
+
+%load redpoints.mat
+%load bluepoints.mat
+
 
 x1 = redpoints(:, 1)
 x2 = bluepoints(:, 1)
@@ -55,15 +59,16 @@ for i = 1:size(x1,1)
     depths(i) = x * p / (distances(i) * calibration_constant - p)
 end
 
-[r, c] = size(img);
+[r, c] = size(img(:, :, 2));
 [xq, yq] = meshgrid(1:r, 1:c);
 %touse = inpolygon(xq, yq, x1(inds), y1(inds));
 %xq = xq(touse);
 %yq = yq(touse);
 vq = griddata(redpoints(:,1), redpoints(:, 2), depths, xq, yq);
 
-warp(xq, yq, vq,img)
 
+%img(:, :, 2) is for the red channel
+warp(xq, yq, vq,img(:, :, 2))
 
 
 
