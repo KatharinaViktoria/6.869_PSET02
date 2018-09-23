@@ -11,7 +11,7 @@ b3 = [2326,2178];
 a4 = [2166,794];
 b4 = [2430,798];
 
-% h= calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4);
+h= calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4);
 
 % conversion of vec h to homography matrix H
 H = [h(1:3,1)';h(4:6,1)';h(7:9,1)']
