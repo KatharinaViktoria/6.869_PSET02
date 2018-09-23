@@ -33,11 +33,11 @@ img = imread('DSC_0221.JPG');
 %imshow(img)
 %bluepoints = ginput(20)
 
-save('redpoints.mat','redpoints')
-save('bluepoints.mat','bluepoints')
+% save('redpoints.mat','redpoints')
+% save('bluepoints.mat','bluepoints')
 
-%load redpoints.mat
-%load bluepoints.mat
+load redpoints.mat
+load bluepoints.mat
 
 
 x1 = redpoints(:, 1)
