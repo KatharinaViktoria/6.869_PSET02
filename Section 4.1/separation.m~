@@ -22,21 +22,23 @@ x = 16;
 % p = 1"
 p = 1;
 
-% d is an array of calibrated measured distances
-d = measured_distances * calibration_constant;
+% d is an array of calibrated
+d = [];
 
 % Z is an array of calculated distances between the camera and light
 Z = [];
 
 for i = 1:size(distances,2)
-    Z(i) = x * p / (d(1,i) - p);
+    Z(i) = x * p / (distances(1,i) * calibration_constant - p);
 end
 
+
+
 figure
-scatter(d, Z, 'filled')
+scatter(distances * calibration_constant, Z, 'filled')
 hold on;
 err = 8*ones(size(Z));
-errorbar(d, Z, err, 'LineStyle','none');
+errorbar(distances * calibration_constant, Z, err, 'LineStyle','none');
 xlabel('Measured distance between 2 spots in inches (d)')
 ylabel('Calculated distance between camera and light in inches (Z)') 
 title('Relationship between Z and d')
