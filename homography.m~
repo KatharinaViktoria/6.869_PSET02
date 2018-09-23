@@ -13,7 +13,15 @@ phone_image = imread('pictures/phone_statue.JPG');
 
 % we want to transform points a (a1-a2) to be in the same coordinate systems as
 % points in image b (b1-b4)
-% see additional sketch provided in the write-up
+% b1 = [996,778];
+% b2 = [3046,693];
+% b3 = [1080, 2322];
+% b4 = [3070,2249];
+% a1 = [525, 139];
+% a2 = [3275, 126];
+% a3 = [501, 2310];
+% a4 = [3396, 2261];
+
 
 b1 = [996,778];
 b2 = [3046,693];
@@ -24,18 +32,60 @@ a4 = [3275, 126];
 a1 = [501, 2310];
 a2 = [3396, 2261];
 
-
-%%  perform translation with vertical flip
-
+%% tranlsation without rotation
 h= calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4);
 
 % conversion of vec h to homography matrix H
 H = [h(1:3,1)';h(4:6,1)';h(7:9,1)'];
 H_inv = H';
-H_inv = H_inv./H_inv(3,3); % normalize such that H(3,3) = 1
-% we have to set make sure that H(1,3) and H(2,3) are exactly zero otherwise H cannot be converted into an affine2d object
-% (it would be preferred if this step would not be necessary)
-H_inv(:,3) = round(H_inv(:,3)); 
+H_inv = H_inv./H_inv(3,3)
+H_inv(:,3) = [0;0;1] % find more elegant solution!!!!
+calibrated_image = imwarp(pinhole_image, affine2d(H_inv));
+
+
+figure
+subplot(221)
+imshow(pinhole_image)
+subplot(222)
+imshow(calibrated_image(:,:,1))
+subplot(223)
+imshow(calibration_image)
+
+
+%% translation with 180 degree rotation
+
+h= calculate_homography(a4,b1,a3,b2,a2,b3,a1,b4);
+
+% conversion of vec h to homography matrix H
+H = [h(1:3,1)';h(4:6,1)';h(7:9,1)'];
+H_inv = H';
+H_inv = H_inv./H_inv(3,3)
+H_inv(:,3) = [0;0;1] % find more elegant solution!!!!
+calibrated_image = imwarp(pinhole_image, affine2d(H_inv));
+
+
+figure
+subplot(221)
+imshow(calibration_image)
+subplot(222)
+imshow(phone_image)
+subplot(223)
+imshow(pinhole_image)
+subplot(224)
+imshow(calibrated_image(:,:,1))
+
+
+
+%% translation with vertical flip
+
+% h= calculate_homography(a3,b1,a4,b2,a1,b3,a2,b4);
+h= calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4);
+% conversion of vec h to homography matrix H
+H = [h(1:3,1)';h(4:6,1)';h(7:9,1)'];
+H_inv = H';
+H_inv = H_inv./H_inv(3,3) % normalize such that H(3,3) = 1
+
+H_inv(:,3) = round(H_inv(:,3)) % we have to set make sure that H(1,3) and H(2,3) are exactly zero otherwise H cannot be converted into an affine2d object
 calibrated_image = imwarp(pinhole_image, affine2d(H_inv));
 
 
