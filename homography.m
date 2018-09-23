@@ -1,6 +1,9 @@
+%% load images
 calibration_image = imread('pictures/DSC_0243.jpg');
 pinhole_image = imread('pictures/DSC_0210.jpg');
-phone_image
+phone_image = imread('pictures/phone_statue.JPG');
+%%
+
 figure
 subplot(121)
 imshow(calibration_image)
@@ -61,16 +64,17 @@ calibrated_image = imwarp(pinhole_image, affine2d(H_inv));
 
 figure
 subplot(221)
-imshow(pinhole_image)
-subplot(222)
-imshow(calibrated_image(:,:,1))
-subplot(223)
 imshow(calibration_image)
+subplot(222)
+imshow(phone_image)
+subplot(223)
+imshow(pinhole_image)
+subplot(224)
+imshow(calibrated_image(:,:,1))
+
 
 
 %% translation with vertical flip
-
-%% translation with 180 degree rotation
 
 h= calculate_homography(a3,b1,a4,b2,a1,b3,a2,b4);
 
@@ -82,14 +86,19 @@ H_inv(:,3) = [0;0;1] % find more elegant solution!!!!
 calibrated_image = imwarp(pinhole_image, affine2d(H_inv));
 
 
+
 figure
 subplot(221)
-imshow(pinhole_image)
-subplot(222)
-imshow(calibrated_image(:,:,1))
-subplot(223)
 imshow(calibration_image)
-%%
+subplot(222)
+imshow(phone_image)
+subplot(223)
+imshow(pinhole_image)
+subplot(224)
+imshow(calibrated_image)
+
+%% homography function
+
 
 function h = calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4)
 % input: coordinates of corresponding points 
