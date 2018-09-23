@@ -13,15 +13,7 @@ phone_image = imread('pictures/phone_statue.JPG');
 
 % we want to transform points a (a1-a2) to be in the same coordinate systems as
 % points in image b (b1-b4)
-% b1 = [996,778];
-% b2 = [3046,693];
-% b3 = [1080, 2322];
-% b4 = [3070,2249];
-% a1 = [525, 139];
-% a2 = [3275, 126];
-% a3 = [501, 2310];
-% a4 = [3396, 2261];
-
+% see additional sketch provided in the write-up
 
 b1 = [996,778];
 b2 = [3046,693];
