@@ -1,6 +1,7 @@
 %% load images
 calibration_image = imread('pictures/DSC_0243.jpg');
 pinhole_image = imread('pictures/DSC_0210.jpg');
+pinhole_image2 = imread('pictures/DSC_0191.jpg');
 phone_image = imread('pictures/phone_statue.JPG');
 %% initialized coordinates
 
@@ -19,24 +20,23 @@ b1 = [996,778];
 b2 = [3046,693];
 b3 = [1080, 2322];
 b4 = [3070,2249];
+
+% coordinates for image 1
 a3 = [525, 139];
 a4 = [3275, 126];
 a1 = [501, 2310];
 a2 = [3396, 2261];
 
+% coordinates for image 2 
+a_3 = [834, 90];
+a_4 = [3178, 75];
+a_1 = [806, 1930];
+a_2 = [3234, 1926];
 
-%%  perform translation with vertical flip
+%%  perform calibration with horizontal flip on pinhole_image
 
-h= calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4);
-
-% conversion of vec h to homography matrix H
-H = [h(1:3,1)';h(4:6,1)';h(7:9,1)'];
-H_inv = H';
-H_inv = H_inv./H_inv(3,3); % normalize such that H(3,3) = 1
-% we have to set make sure that H(1,3) and H(2,3) are exactly zero otherwise H cannot be converted into an affine2d object
-% (it would be preferred if this step would not be necessary)
-H_inv(:,3) = round(H_inv(:,3)); 
-calibrated_image = imwarp(pinhole_image, affine2d(H_inv));
+H= calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4);
+calibrated_image = imwarp(pinhole_image, affine2d(H));
 
 
 
@@ -54,10 +54,21 @@ subplot(224)
 imshow(calibrated_image)
 title('transformed pinhole camera image')
 
+imwrite(calibrated_image, 'statue_calibrated.jpg')
+
+%% calibration of pinhole_image2 
+
+H= calculate_homography(a_1,b1,a_2,b2,a_3,b3,a_4,b4);
+calibrated_image2 = imwarp(pinhole_image2, affine2d(H));
+
+figure
+imshow(calibrated_image2)
+imwrite(calibrated_image2,'stata_calibrated.jpg')
+
 %% homography function
 
 
-function h = calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4)
+function H_inv = calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4)
 % input: coordinates of corresponding points 
 % a (pinhole image) and b (calibration image) (preferably the corners of the white paper) 
 % returns h: entries for transformation matrix in vector form
@@ -98,18 +109,26 @@ function h = calculate_homography(a1,b1,a2,b2,a3,b3,a4,b4)
 %   h will be the eigenvec with the smallest sigma
 %   the singular vector that corresponds to sigma_min is the last column of
 %   V
-    [U,S,V] = svd(A);
-    h = V(:,8);
+%     [U,S,V] = svd(A);
+%     h = V(:,8);
 
 
     % alternative way: solve linear system (add another row (0 0 0 0 0 0 0 0 1) to A and solve for A*h = b)
-%   A(9,:) = [0 0 0 0 0 0 0 0 1]
-%   b = zeros(9,1);
-%   b(9,1) = 1;
-%     
-%   h = A\b
+  A(9,:) = [0 0 0 0 0 0 0 0 1]
+  b = zeros(9,1);
+  b(9,1) = 1;
+
+  h = A\b
+
+    H = [h(1:3,1)';h(4:6,1)';h(7:9,1)'];
+    H_inv = H';
+    H_inv = H_inv./H_inv(3,3); % normalize such that H(3,3) = 1
+    % we have to set make sure that H(1,3) and H(2,3) are exactly zero otherwise H cannot be converted into an affine2d object
+    % (it would be preferred if this step would not be necessary)
+    H_inv(:,3) = round(H_inv(:,3));
  
 end
+
 
 
 
